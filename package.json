@@ -1,19 +1,23 @@
 {
-    "name": "ag-docs",
-    "version": "0.0.1",
-    "description": "Documentation for AG - Agent platform",
-    "main": "index.js",
-    "scripts": {
-        "dev": "mint dev --port 3004",
-        "build": "mint build",
-        "preview": "mint preview"
-    },
-    "dependencies": {
-        "mint": "^4.2.0"
-    },
-    "engines": {
-        "node": ">=18"
-    },
-    "keywords": ["documentation", "agents", "ai"],
-    "license": "MIT"
+  "name": "@agdev/docs",
+  "version": "0.0.1",
+  "description": "Documentation for AG - Agent platform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "mint dev --port 3004",
+    "build": "mint build",
+    "preview": "mint preview"
+  },
+  "dependencies": {
+    "mint": "^4.2.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "documentation",
+    "agents",
+    "ai"
+  ],
+  "license": "MIT"
 }
