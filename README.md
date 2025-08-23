@@ -1,6 +1,6 @@
-# AG Documentation
+# Ag.dev Documentation
 
-This repository contains the public documentation for AG, an agent platform for building and deploying AI agents.
+This repository contains the public documentation for Ag.dev, the platform for building and deploying AI agents.
 
 ## Development
 
@@ -30,14 +30,3 @@ This will start the development server on `http://localhost:3004`.
 npm run build
 npm run preview
 ```
-
-## Contributing
-
-This repository is automatically synchronized with the main AG monorepo. To contribute documentation changes:
-
-1. Make changes in the main AG repository
-2. The changes will be automatically reflected here via git submodule
-
-## License
-
-MIT
