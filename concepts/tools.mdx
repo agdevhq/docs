@@ -1,0 +1,38 @@
+---
+title: Tools
+description: "Discover the tools that power Agents and how to extend their capabilities."
+---
+
+**Tools** are the capabilities you can give to an [Agent](/concepts/agents) to help it achieve its goal. Just like you would give a person a set of tools to do a job, you can equip an agent with the right functions to interact with the world and perform actions.
+
+Tools are what make agents powerful, allowing them to go beyond simple text generation and take meaningful steps to complete tasks.
+
+### Built-in Tools
+
+Ag.dev comes with a set of pre-built tools that you can enable for any agent with a single click. These tools cover common use cases for information retrieval.
+
+-   **Web Search**: Allows the agent to perform web searches to find up-to-date information on any topic. This is essential for research tasks.
+-   **News Search**: Gives the agent the ability to search for recent news articles, perfect for tasks that require the latest headlines and developments.
+-   **Browse Website**: Enables the agent to navigate to a specific URL, read its content, and extract information. This is useful for summarizing articles, extracting data from a page, or monitoring a website for changes.
+
+You can select any combination of these tools when creating or editing an agent.
+
+### MCP (Model Context Protocol) Tools
+
+While built-in tools are powerful, the true potential of agents is unlocked through custom tools. This is where the **Model Context Protocol (MCP)** system comes in.
+
+MCP is an open standard designed to let language models interact seamlessly with external tools and data sources. It acts as a universal bridge, allowing you to connect your own services to the Ag.dev platform securely and reliably.
+
+Here's how it works:
+
+1.  **Create an MCP Server**: An MCP server is an external service you build that exposes a set of custom tools via the Model Context Protocol. For example, you could create an MCP server that connects to your company's internal CRM, a proprietary database, or a third-party API.
+2.  **Attach the Server**: In the Ag.dev Console, you can attach your MCP server to an agent by providing its URL.
+3.  **Enable Tools**: Once attached, you can see all the tools your MCP server provides and select which ones the agent is allowed to use.
+
+This extensible system means you can create agents with highly specialized capabilities tailored to your specific workflows. For example, you could build an agent that can:
+
+-   Look up customer information in your CRM.
+-   Analyze sales data from a private database.
+-   Post messages to a Slack channel.
+
+By building your own MCP servers, you can transform agents from general-purpose assistants into highly specialized, automated team members.

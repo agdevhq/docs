@@ -1,0 +1,27 @@
+---
+title: Agents
+description: "Understand what Agents are and how they work."
+---
+
+An **Agent** is a configurable AI worker that you can create and deploy to perform specific tasks autonomously. Think of it as a specialized team member you can design, train, and assign to a job. Each agent operates based on a set of instructions and can be equipped with various tools to achieve its objectives.
+
+Agents are the core of the Ag.dev platform. They are designed to be "headless," meaning they execute tasks in the background without requiring a real-time conversational interface. You define their purpose, and they work independently to deliver results.
+
+### The Anatomy of an Agent
+
+An agent is defined by several key properties that control its behavior and capabilities:
+
+-   **Goal Prompt**: This is the most important instruction, defining the agent's primary objective. A clear, specific goal is crucial for success.
+-   **Tools**: An agent can be equipped with a set of [Tools](/concepts/tools) to perform actions like searching the web, browsing websites, or interacting with external services via MCP.
+-   **Input Schema**: This is a JSON schema that defines the structure of the data an agent expects to receive for a run. [Learn more about Inputs](/concepts/inputs).
+-   **Output Configuration**: You can configure an agent to return its result as a freeform `document` or as a structured `json` object that conforms to a specific schema.
+-   **Model Stack**: You can select the underlying AI model that the agent will use, allowing you to choose the best fit for your task's complexity and cost.
+-   **Status**: An agent can be `active` or `inactive`. An inactive agent cannot be run.
+
+### The Agent Lifecycle
+
+1.  **Creation**: You create an agent through the Ag.dev Console or API, defining its anatomy.
+2.  **Execution**: Once created, the agent is ready to be run. Each execution is called a [Run](/concepts/runs).
+3.  **Monitoring & Refinement**: You can monitor the performance of an agent by observing its runs. Based on the results, you can refine its goal, tools, or other settings to improve its effectiveness.
+
+By creating and combining different agents, you can build powerful, automated workflows to handle complex tasks at scale.

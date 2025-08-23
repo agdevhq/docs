@@ -1,0 +1,88 @@
+---
+title: Inputs
+description: "Learn how to define and use inputs to create powerful, dynamic agents."
+---
+
+Inputs are how you pass information to an [Agent](/concepts/agents) when you start a [Run](/concepts/runs). They are the key to making your agents reusable and dynamic, allowing you to run the same agent with different data for a wide range of tasks.
+
+By defining a clear input structure, you can build powerful agents that fit your workflows and are easy to trigger programmatically.
+
+### Defining the Input Schema
+
+Every agent has an **Input Schema**, which tells it what kind of data to expect for a run. This schema is written using **JSON Schema**, a popular and standardized way to define the structure of JSON data.
+
+Let's imagine we're building a "Sales Lead Profiler" agent. We want to give it the name of a person and the company they work at, and optionally some other details. Here’s what the input schema would look like:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The person's full name"
+    },
+    "company": {
+      "type": "string",
+      "description": "The company the person works at"
+    },
+    "jobTitle": {
+      "type": "string",
+      "description": "The person's job title (optional)"
+    },
+    "website": {
+      "type": "string",
+      "description": "Company website URL (optional)"
+    },
+    "linkedinUrl": {
+      "type": "string",
+      "description": "Public LinkedIn profile URL (optional)"
+    }
+  },
+  "required": ["name", "company"]
+}
+```
+
+This schema tells us:
+- The input must be a JSON object.
+- `name` and `company` are required.
+- `jobTitle`, `website`, and `linkedinUrl` are optional.
+
+When you create a run for this agent in the Ag.dev Console, a form will be automatically generated based on this schema, ensuring that you provide valid inputs every time.
+
+### Using Inputs in Your Goal Prompt
+
+The real power of inputs comes from using them to dynamically control your agent's behavior. You can reference the properties from your input schema directly in your agent's **Goal Prompt**. We support Handlebars syntax for templating, so you can use `{{ propertyName }}` for placeholders and `{{#if}}...{{/if}}` for conditional logic.
+
+Here’s how we could write the goal prompt for our Sales Lead Profiler:
+
+```hbs wrap
+Create a concise sales lead profile for {{ name }} at {{ company }}.
+{{#if jobTitle}}Their job title is {{ jobTitle }}.{{/if}}
+{{#if website}}Review the company website ({{ website }}) for recent news or initiatives that could be relevant.{{/if}}
+{{#if linkedinUrl}}Also consider any public information from their LinkedIn profile: {{ linkedinUrl }}.{{/if}}
+
+Please return a few bullet points covering their background, responsibilities, recent company initiatives, potential buying triggers, and a recommended outreach angle.
+```
+
+Now, when you start a run with an input like this:
+```json
+{
+  "name": "Dana Lee",
+  "company": "Acme Robotics",
+  "website": "https://acmerobotics.com"
+}
+```
+
+The agent will receive a perfectly tailored goal prompt:
+```text wrap
+Create a concise sales lead profile for Dana Lee at Acme Robotics.
+Review the company website (https://acmerobotics.com) for recent news or initiatives that could be relevant.
+
+Please return a few bullet points covering their background, responsibilities, recent company initiatives, potential buying triggers, and a recommended outreach angle.
+```
+
+This allows you to create a single, highly-capable agent that you can reuse for any new lead, simply by changing the inputs.
+
+<Note>
+We use Handlebars for templating, which means common blocks like `{{#if}}`, `{{#unless}}`, and `{{#each}}` are all supported.
+</Note>

@@ -1,0 +1,122 @@
+---
+title: "Quickstart"
+description: "Create your first agent and run it in minutes."
+---
+
+This guide will walk you through creating your first agent and running it on the Ag.dev platform. You'll learn the basic workflow, from creating an account to seeing your agent in action.
+
+## 1. Create Your Account
+
+First, head over to [console.ag.dev](https://console.ag.dev) to sign up for a new account or log in if you already have one. Once you're in, you'll land on the main agents dashboard.
+
+## 2. Create Your First Agent
+
+Let's build your first agent. We'll use the UI to configure and create it.
+
+<Steps>
+  <Step title="Start Creating Your Agent">
+    Click the **"Create Agent"** button on the agents page. This will open the agent configuration drawer.
+  </Step>
+  <Step title="Configure Your Agent">
+    Here, you'll define what your agent is, what it should do, and what tools it can use.
+
+    - **Name**: Give your agent a descriptive name, like "Research Assistant".
+    - **Goal**: This is the most important part. Be specific about what you want your agent to accomplish. For example:
+      ```text
+      Research {{ topic }} and provide a comprehensive summary with key findings, recent developments, and relevant statistics. Include credible sources for all information.
+      ```
+    <Note>The `{{ topic }}` placeholder lets you dynamically provide a topic when you run the agent.</Note>
+
+    - **Input Schema**: Define the data your agent will receive using JSON schema. For our research assistant, we need a `topic`:
+      ```json
+      {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "The research topic or question to investigate"
+          }
+        },
+        "required": ["topic"]
+      }
+      ```
+
+    - **Tools**: Select the tools your agent needs to achieve its goal. For research, you'll want to enable **Web Search** and **Browse Website**.
+
+    For your first agent, you can leave the **Advanced Settings** like Model Stack and Webhook URL as they are.
+  </Step>
+  <Step title="Create the Agent">
+    Click the **"Create Agent"** button. You'll be redirected to the agent's details page.
+  </Step>
+</Steps>
+
+## 3. Run Your Agent
+
+Now that you have an agent, let's give it a task to perform.
+
+<Steps>
+  <Step title="Start a New Run">
+    On the agent details page, click the **"New Run"** button.
+  </Step>
+  <Step title="Provide Inputs">
+    A form will appear with fields based on the input schema you defined. For our example, you'll see a "Topic" field. Let's enter: "Artificial Intelligence in Healthcare".
+  </Step>
+  <Step title="Execute the Run">
+    Click **"Create Run"** to start your agent. You'll be taken to the run details page where you can see it work in real-time.
+  </Step>
+</Steps>
+
+## 4. Monitor the Run in Real-Time
+
+On the run details page, you can watch your agent as it executes the task. The **Events** tab displays a live timeline of everything the agent does:
+
+- **Run Started**: Shows the initial inputs.
+- **Reasoning**: See the agent's thought process and plans.
+- **Tool Usage**: Observe the agent using tools like web search.
+- **Run Completed/Failed**: See the final status.
+
+The page updates automatically, so you can follow along as your agent thinks, searches the web, and works towards its goal.
+
+## 5. Review the Results
+
+Once the run is complete, it's time to see the outcome. The results page is split into two main sections:
+
+### Result
+
+The **Result** section contains the final output from your agent. If you configured a "document" result type, you'll find the text-based summary here. For "json" results, you'll see the structured data.
+
+### Sources
+
+If your agent used tools for research, the **Sources** section lists all the websites and references it consulted to generate the result. This is great for verifying information.
+
+## What's Next?
+
+Congratulations! You've successfully built and run your first agent. Now you can start exploring more advanced capabilities.
+
+- **Experiment and Refine**: Try different goals, tools, and inputs to see how your agent's behavior changes. Small tweaks to the goal can have a big impact on the quality of the results.
+- **Build Specialized Agents**: Create agents for other use cases like data analysis, content creation, or monitoring your own systems by creating custom tools.
+- **Integrate and Automate**: Use the API to trigger agent runs programmatically and set up webhooks to integrate agent results into your applications and workflows.
+
+## Troubleshooting
+
+If you run into any issues, here are a few common solutions.
+
+<AccordionGroup>
+  <Accordion title="Agent produces poor results">
+    - Refine your goal prompt to be more specific and clear. A well-defined goal is key.
+    - Ensure you've enabled the necessary tools for the task.
+    - Experiment with different input parameters.
+  </Accordion>
+  <Accordion title="Agent run fails with an error">
+    - Check the Events timeline to find the exact error message.
+    - If you are browsing websites, verify that the URLs are correct and accessible.
+    - Make sure your account has sufficient credits to run agents.
+  </Accordion>
+</AccordionGroup>
+
+
+**Need more help?** Join our [Discord Community](https://discord.gg/cPSJbuKDse) for support or email us at [hi@ag.dev](mailto:hi@ag.dev).
+
+---
+
+You're now ready to build powerful autonomous agents that can handle complex tasks at scale. Happy building!

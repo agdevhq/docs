@@ -1,0 +1,67 @@
+{
+    "$schema": "https://mintlify.com/docs.json",
+    "theme": "mint",
+    "name": "Ag.dev",
+    "logo": {
+        "light": "/public/logo.svg",
+        "dark": "/public/logo.svg"
+    },
+    "favicon": "/public/favicon.ico",
+    "colors": {
+        "primary": "#000000",
+        "light": "#ffffff",
+        "dark": "#000000"
+    },
+    "navigation": {
+        "tabs": [
+            {
+                "tab": "Documentation",
+                "groups": [
+                    {
+                        "group": "Getting started",
+                        "pages": ["index", "quickstart"]
+                    },
+                    {
+                        "group": "Core Concepts",
+                        "pages": [
+                            "concepts/agents",
+                            "concepts/runs",
+                            "concepts/tools",
+                            "concepts/inputs"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "global": {
+            "anchors": [
+                {
+                    "anchor": "Discord Community",
+                    "href": "https://discord.gg/cPSJbuKDse",
+                    "icon": "discord"
+                }
+            ]
+        }
+    },
+    "navbar": {
+        "links": [
+            {
+                "label": "Support",
+                "href": "mailto:hi@ag.dev"
+            }
+        ],
+        "primary": {
+            "type": "button",
+            "label": "Console",
+            "href": "https://console.ag.dev"
+        }
+    },
+    "contextual": {
+        "options": ["copy", "view"]
+    },
+    "footer": {
+        "socials": {
+            "discord": "https://discord.gg/cPSJbuKDse"
+        }
+    }
+}
