@@ -1,0 +1,199 @@
+---
+title: "Agent Versioning"
+description: "Learn how agent versioning works and how to manage different versions of your agents"
+sidebarTitle: "Versioning"
+icon: "code-branch"
+---
+
+Agent versioning provides a robust system for managing changes to your agents over time. Every modification creates an immutable **revision**, allowing you to track changes, experiment safely, and roll back when needed.
+
+## Understanding Agent Versioning
+
+When you create or modify an agent, the system automatically creates a new revision containing the complete configuration snapshot at that point in time. This approach ensures:
+
+- **Complete audit trail** of all changes
+- **Safe experimentation** with draft revisions
+- **Reliable rollback** to previous working versions
+- **Consistent run execution** tied to specific configurations
+
+### Key Concepts
+
+<AccordionGroup>
+  <Accordion title="Revisions">
+    A revision is an immutable snapshot of an agent's configuration at a specific point in time. Each revision includes:
+    - Model configuration
+    - Goal prompt and instructions
+    - Tool settings
+    - Input/output schemas
+    - All other configuration parameters
+  </Accordion>
+
+  <Accordion title="Published vs Draft">
+    - **Published Revision**: The "production" version that runs execute against by default
+    - **Draft Revisions**: Unpublished changes that can be tested before promoting to production
+  </Accordion>
+
+  <Accordion title="Agent Status">
+    In the Console, agents display one of three status indicators to help you understand their current state:
+
+    - **Unpublished**: The agent exists but doesn't have any published version yet - you'll need to publish a revision before it can run in production
+    - **Published**: The agent has a live version that's ready for production use, with no pending changes waiting to be published
+    - **Unpublished Changes**: The agent has a published version, but you've made additional changes that haven't been published yet
+
+    <Note>
+    These status indicators are calculated from your agent's publishing history and recent modifications, making it easy to see at a glance whether your latest changes are live or still in draft.
+    </Note>
+  </Accordion>
+</AccordionGroup>
+
+## Working with Versions
+
+### Creating Revisions
+
+Every time you update an agent's configuration through the API or Console, a new revision is automatically created:
+
+<CodeGroup>
+```bash API
+# Update an agent (creates a new revision)
+curl -X PATCH https://api.ag.dev/v0.1/agents/{agentId} \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "goalPrompt": "Updated instructions for the agent",
+    "tools": ["web", "news"]
+  }'
+```
+
+```javascript SDK
+// Update an agent (creates a new revision)
+const updatedAgent = await client.agents.update(agentId, {
+  goalPrompt: "Updated instructions for the agent",
+  tools: ["web", "news"]
+});
+```
+</CodeGroup>
+
+<Note>
+Updating only the agent's name or description does not create a new revision. Revisions are created only when configuration changes are made.
+</Note>
+
+### Publishing Revisions
+
+To make a revision available for production use, you need to publish it:
+
+<Steps>
+  <Step title="Make your changes">
+    Update your agent's configuration through the API or Console. This creates a new draft revision.
+  </Step>
+
+  <Step title="Test the revision">
+    You can run specific revisions before publishing to verify they work as expected:
+
+    ```bash
+    curl -X POST https://api.ag.dev/v0.1/agents/{agentId}/runs \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "revisionId": "{revisionId}",
+        "input": { ... }
+      }'
+    ```
+  </Step>
+
+  <Step title="Publish the revision">
+    Once satisfied, publish the revision to make it the default for all future runs:
+
+    ```bash
+    curl -X POST https://api.ag.dev/v0.1/agents/{agentId}/publish \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "revisionId": "{revisionId}"
+      }'
+    ```
+  </Step>
+</Steps>
+
+### Viewing Revision History
+
+You can view all revisions for an agent to understand its evolution:
+
+<Tabs>
+  <Tab title="Console">
+    Navigate to your agent's details page and click the **Versions** tab to see:
+    - Complete revision history with timestamps
+    - Which revision is currently published
+    - Quick publish actions for draft revisions
+  </Tab>
+
+  <Tab title="API">
+    ```bash
+    # List all revisions for an agent
+    curl https://api.ag.dev/v0.1/agents/{agentId}/revisions \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+
+    Response includes revision IDs, creation times, and publication status.
+  </Tab>
+</Tabs>
+
+### Comparing Revisions
+
+To understand what changed between revisions, you can compare them:
+
+```bash
+# Compare two revisions
+curl "https://api.ag.dev/v0.1/agents/{agentId}/revisions/diff?from={fromRevisionId}&to={toRevisionId}" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+The response shows property-by-property changes with before/after values.
+
+## Running Specific Versions
+
+### Default Behavior
+
+When you create a run without specifying a revision:
+- If the agent has a **published revision**, that version is used
+- If the agent has **no published revision**, the run will fail with an error
+
+```bash
+# Uses the published revision (or fails if none exists)
+curl -X POST https://api.ag.dev/v0.1/agents/{agentId}/runs \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{ "input": { ... } }'
+```
+
+### Targeting Specific Revisions
+
+You can run any revision, published or not, by specifying its ID:
+
+```bash
+# Run a specific revision
+curl -X POST https://api.ag.dev/v0.1/agents/{agentId}/runs \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "revisionId": "{revisionId}",
+    "input": { ... }
+  }'
+```
+
+<Tip>
+This is useful for testing draft revisions before publishing them or for running older versions when troubleshooting.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title='"Agent not published" error when creating runs'>
+    **Cause**: No revision has been published for the agent
+
+    **Solution**: Publish a revision using the `/agents/{id}/publish` endpoint or specify a revision ID in your run request
+  </Accordion>
+
+  <Accordion title="Changes not reflected in runs">
+    **Cause**: Changes are in a draft revision that hasn't been published
+
+    **Solution**: Publish the latest revision or explicitly specify the revision ID when creating runs
+  </Accordion>
+</AccordionGroup>

@@ -1,6 +1,7 @@
 ---
 title: Agents
 description: "Understand what Agents are and how they work."
+icon: "head-side-gear"
 ---
 
 An **Agent** is a configurable AI worker that you can create and deploy to perform specific tasks autonomously. Think of it as a specialized team member you can design, train, and assign to a job. Each agent operates based on a set of instructions and can be equipped with various tools to achieve its objectives.
@@ -16,12 +17,20 @@ An agent is defined by several key properties that control its behavior and capa
 -   **Input Schema**: This is a JSON schema that defines the structure of the data an agent expects to receive for a run. [Learn more about Inputs](/concepts/inputs).
 -   **Output Configuration**: You can configure an agent to return its result as a freeform `document` or as a structured `json` object that conforms to a specific schema.
 -   **Model Stack**: You can select the underlying AI model that the agent will use, allowing you to choose the best fit for your task's complexity and cost.
--   **Status**: An agent can be `active` or `inactive`. An inactive agent cannot be run.
+-   **Publication Status**: Agents display status indicators in the Console to show their current state - **Unpublished** (no published version yet), **Published** (live version ready for production use), or **Unpublished Changes** (published version with newer draft changes). [Learn more about versioning](/concepts/versioning).
 
 ### The Agent Lifecycle
 
-1.  **Creation**: You create an agent through the Ag.dev Console or API, defining its anatomy.
-2.  **Execution**: Once created, the agent is ready to be run. Each execution is called a [Run](/concepts/runs).
-3.  **Monitoring & Refinement**: You can monitor the performance of an agent by observing its runs. Based on the results, you can refine its goal, tools, or other settings to improve its effectiveness.
+<Note>
+All agents are [versioned](/concepts/versioning) by default. All configuration changes are stored as immutable revisions, allowing you to safely experiment, rollback, and maintain consistent production deployments.
+</Note>
+
+1.  **Creation**: You create an agent through the Ag.dev Console or API, defining its anatomy. This creates the first revision.
+2.  **Configuration**: Make changes to your agent's settings. Each change creates a new revision that can be tested before publishing.
+3.  **Publishing**: Promote a tested revision to production, making it the default for new runs.
+4.  **Execution**: Once published, the agent is ready to be run. Each execution is called a [Run](/concepts/runs) and uses the published revision by default.
+5.  **Monitoring & Refinement**: Monitor performance through run results. Create new revisions to improve effectiveness, test them, and publish when ready.
 
 By creating and combining different agents, you can build powerful, automated workflows to handle complex tasks at scale.
+
+

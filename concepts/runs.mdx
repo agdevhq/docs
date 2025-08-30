@@ -1,15 +1,17 @@
 ---
 title: Runs
 description: "Learn about Runs, the execution of an Agent's task."
+icon: "play"
 ---
 
 A **Run** is a single execution of an [Agent](/concepts/agents). When you assign a task to an agent by providing it with specific inputs, you initiate a run. The run represents the entire lifecycle of that task, from starting the process to delivering the final result.
 
-Each run is a distinct, logged instance of an agent's work, allowing you to track and analyze its performance on a case-by-case basis.
+Each run is a distinct, logged instance of an agent's work, allowing you to track and analyze its performance on a case-by-case basis. Runs are tied to a specific [agent revision](/concepts/versioning), ensuring consistent and reproducible execution.
 
 ### The Anatomy of a Run
 
 -   **Input**: Every run begins with an `input`, which is a JSON object that conforms to the agent's defined `inputSchema`. This input provides the specific data and parameters the agent needs to complete its task. For example, if you have a research agent, the input might be `{"topic": "AI in healthcare"}`. [Learn more about how to define and use Inputs](/concepts/inputs).
+-   **Agent Revision**: Each run executes against a specific agent revision. By default, runs use the published revision, but you can specify any revision ID to test draft changes or reproduce historical results.
 -   **Status**: A run progresses through several statuses:
     -   `pending`: The run has been created but has not yet started.
     -   `running`: The agent is actively working on the task.
@@ -27,4 +29,42 @@ Runs are essential for several reasons:
 -   **Performance Monitoring**: By analyzing multiple runs, you can evaluate an agent's consistency and accuracy over time, helping you identify opportunities for improvement.
 -   **Scalability**: An agent can be run many times in parallel with different inputs, allowing you to automate tasks at a massive scale. Each run is an independent process.
 
-You can create and monitor runs through the Ag.dev Console or programmatically via the API.
+### Creating Runs with Specific Revisions
+
+When creating a run, you have two options for revision selection:
+
+<Tabs>
+  <Tab title="Published (Default)">
+    By default, runs use the agent's published revision:
+
+    ```bash
+    curl -X POST https://api.ag.dev/v0.1/agents/{agentId}/runs \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{"input": {"topic": "AI in healthcare"}}'
+    ```
+
+    <Warning>
+    If no revision has been published, the run will fail with an error. Make sure to publish at least one revision before creating production runs.
+    </Warning>
+  </Tab>
+
+  <Tab title="Specific Revision">
+    You can target any revision (published or draft) by providing its ID:
+
+    ```bash
+    curl -X POST https://api.ag.dev/v0.1/agents/{agentId}/runs \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "revisionId": "{revisionId}",
+        "input": {"topic": "AI in healthcare"}
+      }'
+    ```
+
+    This is useful for:
+    - Testing draft revisions before publishing
+    - Reproducing historical results
+    - A/B testing different configurations
+  </Tab>
+</Tabs>
+
+You can create and monitor runs through the Console or programmatically via the API. Each run maintains a permanent link to the specific revision it executed, ensuring full traceability.
