@@ -4,7 +4,7 @@
     "name": "Ag.dev",
     "logo": {
         "light": "/public/logo.svg",
-        "dark": "/public/logo.svg"
+        "dark": "/public/logo-inverse.svg"
     },
     "favicon": "/public/favicon.ico",
     "colors": {
