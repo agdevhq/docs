@@ -5,7 +5,6 @@
     "main": "index.js",
     "scripts": {
         "dev": "mint dev --port 3004",
-        "build": "mint build",
         "preview": "mint preview"
     },
     "dependencies": {
