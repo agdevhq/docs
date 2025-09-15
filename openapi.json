@@ -44,7 +44,8 @@
         "/agents": {
             "get": {
                 "tags": ["Agents"],
-                "summary": "List all agents for the authenticated client",
+                "summary": "List Agents",
+                "description": "Retrieve all agents for the authenticated organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "responses": {
                     "200": {
@@ -64,7 +65,8 @@
             },
             "post": {
                 "tags": ["Agents"],
-                "summary": "Create a new agent",
+                "summary": "Create Agent",
+                "description": "Create a new agent with specified configuration and tools",
                 "security": [{ "ApiKeyAuth": [] }],
                 "requestBody": {
                     "required": true,
@@ -99,7 +101,8 @@
         "/agents/{agentId}": {
             "get": {
                 "tags": ["Agents"],
-                "summary": "Get agent details",
+                "summary": "Get Agent",
+                "description": "Retrieve detailed information about a specific agent",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -131,7 +134,8 @@
             },
             "patch": {
                 "tags": ["Agents"],
-                "summary": "Update an existing agent (partial updates)",
+                "summary": "Update Agent",
+                "description": "Update an agent's configuration, tools, or settings",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -176,7 +180,8 @@
             },
             "delete": {
                 "tags": ["Agents"],
-                "summary": "Delete an existing agent",
+                "summary": "Delete Agent",
+                "description": "Permanently remove an agent and all its associated data",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -203,7 +208,8 @@
         "/agents/{agentId}/publish": {
             "post": {
                 "tags": ["Versioning"],
-                "summary": "Publish a revision of an agent",
+                "summary": "Publish Agent Revision",
+                "description": "Publish a specific agent revision to make it the active version",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -252,7 +258,8 @@
         "/agents/{agentId}/revisions": {
             "get": {
                 "tags": ["Versioning"],
-                "summary": "List revisions for an agent",
+                "summary": "List Agent Revisions",
+                "description": "Retrieve the version history of an agent's configuration changes",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -309,7 +316,8 @@
         "/agents/{agentId}/revisions/diff": {
             "get": {
                 "tags": ["Versioning"],
-                "summary": "Get diff between two revisions",
+                "summary": "Get Revision Diff",
+                "description": "Compare two agent revisions to see configuration differences",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -363,7 +371,7 @@
         "/agents/{agentId}/runs": {
             "get": {
                 "tags": ["Runs"],
-                "summary": "List agent runs",
+                "summary": "List Agent Runs",
                 "description": "Get a list of runs for a specific agent with optional filtering and pagination",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
@@ -429,7 +437,8 @@
             },
             "post": {
                 "tags": ["Runs"],
-                "summary": "Start a new agent run",
+                "summary": "Start Agent Run",
+                "description": "Execute an agent with the provided input data and return results",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -475,7 +484,8 @@
         "/agents/{agentId}/runs/{runId}": {
             "get": {
                 "tags": ["Runs"],
-                "summary": "Get run status and results",
+                "summary": "Get Agent Run",
+                "description": "Retrieve detailed information about a specific agent run including results",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -520,7 +530,8 @@
         "/agents/{agentId}/runs/{runId}/events": {
             "get": {
                 "tags": ["Runs"],
-                "summary": "Get events for a run",
+                "summary": "List Agent Run Events",
+                "description": "Retrieve the sequence of events that occurred during an agent run",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -588,7 +599,7 @@
         "/mcp-servers": {
             "get": {
                 "tags": ["MCP Servers"],
-                "summary": "List MCP servers",
+                "summary": "List MCP Servers",
                 "description": "Get all MCP servers for the authenticated organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "responses": {
@@ -609,7 +620,8 @@
             },
             "post": {
                 "tags": ["MCP Servers"],
-                "summary": "Create a new MCP server",
+                "summary": "Create MCP Server",
+                "description": "Register a new MCP server for use with agents in your organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "requestBody": {
                     "required": true,
@@ -647,7 +659,8 @@
         "/mcp-servers/{mcpServerId}": {
             "get": {
                 "tags": ["MCP Servers"],
-                "summary": "Get MCP server details",
+                "summary": "Get MCP Server",
+                "description": "Retrieve detailed information about a specific MCP server configuration",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -681,7 +694,8 @@
             },
             "patch": {
                 "tags": ["MCP Servers"],
-                "summary": "Update an existing MCP server",
+                "summary": "Update MCP Server",
+                "description": "Modify the configuration of an existing MCP server",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -728,7 +742,8 @@
             },
             "delete": {
                 "tags": ["MCP Servers"],
-                "summary": "Delete an MCP server",
+                "summary": "Delete MCP Server",
+                "description": "Remove an MCP server registration from your organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
                     {
@@ -757,7 +772,7 @@
         "/mcp-servers/{mcpServerId}/tools": {
             "get": {
                 "tags": ["MCP Servers"],
-                "summary": "List available tools from an MCP server",
+                "summary": "List MCP Server Tools",
                 "description": "Get the list of available tools from a configured MCP server",
                 "security": [{ "ApiKeyAuth": [] }],
                 "parameters": [
@@ -794,7 +809,8 @@
         "/settings": {
             "get": {
                 "tags": ["Settings"],
-                "summary": "Get organization settings",
+                "summary": "Get Organization Settings",
+                "description": "Retrieve the current settings for the authenticated organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "responses": {
                     "200": {
@@ -814,7 +830,8 @@
             },
             "patch": {
                 "tags": ["Settings"],
-                "summary": "Update organization settings",
+                "summary": "Update Organization Settings",
+                "description": "Modify the settings for the authenticated organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "requestBody": {
                     "required": true,
@@ -846,7 +863,7 @@
         "/settings/api-keys": {
             "get": {
                 "tags": ["Settings"],
-                "summary": "Get API keys map",
+                "summary": "Get API Keys",
                 "description": "Get masked API keys for the authenticated organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "responses": {
@@ -867,7 +884,7 @@
             },
             "patch": {
                 "tags": ["Settings"],
-                "summary": "Update API keys",
+                "summary": "Update API Keys",
                 "description": "Update API keys for the authenticated organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "requestBody": {
@@ -903,7 +920,7 @@
         "/settings/credits": {
             "get": {
                 "tags": ["Settings"],
-                "summary": "Get organization credit balance",
+                "summary": "Get Credit Balance",
                 "description": "Get the current credit balance in USD for the authenticated organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "responses": {
@@ -933,7 +950,8 @@
         "/users/me": {
             "get": {
                 "tags": ["Users"],
-                "summary": "Get current user information",
+                "summary": "Get Current User",
+                "description": "Retrieve information about the authenticated user and their organization",
                 "security": [{ "ApiKeyAuth": [] }],
                 "responses": {
                     "200": {
@@ -1922,14 +1940,14 @@
         }
     },
     "webhooks": {
-        "onRunUpdate": {
+        "onRunCompleted": {
             "post": {
                 "tags": ["Webhooks"],
 
-                "summary": "Webhook called when an agent run status changes",
-                "description": "This webhook is called whenever an agent run status changes (pending -> running -> done/error).\nConfigure the webhook URL when creating or updating an agent.\n",
+                "summary": "Agent Run Completed",
+                "description": "This webhook is called when an agent run completes with a result (done or error).\nConfigure the webhook URL when creating or updating an agent.\n",
                 "requestBody": {
-                    "description": "Updated run information",
+                    "description": "Completed run information",
                     "content": {
                         "application/json": {
                             "schema": {
