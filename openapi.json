@@ -1,0 +1,1955 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Ag.dev API",
+        "description": "Public API for Ag.dev",
+        "version": "0.1.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.ag.dev/v0.1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Agents",
+            "description": "Agent management and configuration"
+        },
+        {
+            "name": "Runs",
+            "description": "Agent run execution and monitoring"
+        },
+        {
+            "name": "Versioning",
+            "description": "Agent versioning, revisions, and publishing"
+        },
+        {
+            "name": "MCP Servers",
+            "description": "MCP server management and tool discovery"
+        },
+        {
+            "name": "Settings",
+            "description": "Organization settings and API keys"
+        },
+        {
+            "name": "Users",
+            "description": "User information and authentication"
+        },
+        {
+            "name": "Webhooks",
+            "description": "Webhook health checks"
+        }
+    ],
+    "paths": {
+        "/agents": {
+            "get": {
+                "tags": ["Agents"],
+                "summary": "List all agents for the authenticated client",
+                "security": [{ "ApiKeyAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "List of agents",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AgentList"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Agents"],
+                "summary": "Create a new agent",
+                "security": [{ "ApiKeyAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAgentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Agent created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Agent"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            }
+        },
+        "/agents/{agentId}": {
+            "get": {
+                "tags": ["Agents"],
+                "summary": "Get agent details",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agent details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Agent"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Agent not found" }
+                }
+            },
+            "patch": {
+                "tags": ["Agents"],
+                "summary": "Update an existing agent (partial updates)",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAgentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Agent updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Agent"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Agent not found" }
+                }
+            },
+            "delete": {
+                "tags": ["Agents"],
+                "summary": "Delete an existing agent",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Agent deleted successfully"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Agent not found" }
+                }
+            }
+        },
+        "/agents/{agentId}/publish": {
+            "post": {
+                "tags": ["Versioning"],
+                "summary": "Publish a revision of an agent",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "revisionId": {
+                                        "type": "string",
+                                        "description": "The revision ID to publish"
+                                    }
+                                },
+                                "required": ["revisionId"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Revision published successfully"
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": {
+                        "description": "Agent or revision not found"
+                    }
+                }
+            }
+        },
+        "/agents/{agentId}/revisions": {
+            "get": {
+                "tags": ["Versioning"],
+                "summary": "List revisions for an agent",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20,
+                            "description": "Maximum number of revisions to return"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 0,
+                            "description": "Number of revisions to skip for pagination"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of agent revisions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RevisionList"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Agent not found" }
+                }
+            }
+        },
+        "/agents/{agentId}/revisions/diff": {
+            "get": {
+                "tags": ["Versioning"],
+                "summary": "Get diff between two revisions",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Source revision ID for diff"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Target revision ID for diff"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Revision diff",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RevisionDiff"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": {
+                        "description": "Agent or revision not found"
+                    }
+                }
+            }
+        },
+        "/agents/{agentId}/runs": {
+            "get": {
+                "tags": ["Runs"],
+                "summary": "List agent runs",
+                "description": "Get a list of runs for a specific agent with optional filtering and pagination",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20,
+                            "description": "Maximum number of runs to return"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 0,
+                            "description": "Number of runs to skip for pagination"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["pending", "running", "done", "error"],
+                            "description": "Filter runs by status"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of agent runs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AgentRunList"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Agent not found" }
+                }
+            },
+            "post": {
+                "tags": ["Runs"],
+                "summary": "Start a new agent run",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Input data that matches the agent's input schema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Run created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AgentRun"
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Invalid input data" },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Agent not found" }
+                }
+            }
+        },
+        "/agents/{agentId}/runs/{runId}": {
+            "get": {
+                "tags": ["Runs"],
+                "summary": "Get run status and results",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    },
+                    {
+                        "name": "runId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Run ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Run details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AgentRun"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": {
+                        "description": "Agent or run not found"
+                    }
+                }
+            }
+        },
+        "/agents/{agentId}/runs/{runId}/events": {
+            "get": {
+                "tags": ["Runs"],
+                "summary": "Get events for a run",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Agent ID"
+                        }
+                    },
+                    {
+                        "name": "runId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Run ID"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20,
+                            "description": "Maximum number of events to return"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 0,
+                            "description": "Number of events to skip for pagination"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of run events",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AgentRunEventList"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": {
+                        "description": "Agent or run not found"
+                    }
+                }
+            }
+        },
+        "/mcp-servers": {
+            "get": {
+                "tags": ["MCP Servers"],
+                "summary": "List MCP servers",
+                "description": "Get all MCP servers for the authenticated organization",
+                "security": [{ "ApiKeyAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "List of MCP servers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/McpServerList"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["MCP Servers"],
+                "summary": "Create a new MCP server",
+                "security": [{ "ApiKeyAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateMcpServerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "MCP server created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/McpServer"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "409": {
+                        "description": "MCP server with this alias already exists"
+                    }
+                }
+            }
+        },
+        "/mcp-servers/{mcpServerId}": {
+            "get": {
+                "tags": ["MCP Servers"],
+                "summary": "Get MCP server details",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "mcpServerId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "MCP server ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "MCP server details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/McpServer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": {
+                        "description": "MCP server not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["MCP Servers"],
+                "summary": "Update an existing MCP server",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "mcpServerId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "MCP server ID"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateMcpServerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "MCP server updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/McpServer"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": {
+                        "description": "MCP server not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["MCP Servers"],
+                "summary": "Delete an MCP server",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "mcpServerId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "MCP server ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "MCP server deleted successfully"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": {
+                        "description": "MCP server not found"
+                    }
+                }
+            }
+        },
+        "/mcp-servers/{mcpServerId}/tools": {
+            "get": {
+                "tags": ["MCP Servers"],
+                "summary": "List available tools from an MCP server",
+                "description": "Get the list of available tools from a configured MCP server",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "mcpServerId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "MCP server ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of available tools",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/McpToolsList"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": {
+                        "description": "MCP server not found"
+                    }
+                }
+            }
+        },
+        "/settings": {
+            "get": {
+                "tags": ["Settings"],
+                "summary": "Get organization settings",
+                "security": [{ "ApiKeyAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Organization settings",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrganizationSettings"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Settings"],
+                "summary": "Update organization settings",
+                "security": [{ "ApiKeyAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateOrganizationSettings"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Organization settings updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrganizationSettings"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            }
+        },
+        "/settings/api-keys": {
+            "get": {
+                "tags": ["Settings"],
+                "summary": "Get API keys map",
+                "description": "Get masked API keys for the authenticated organization",
+                "security": [{ "ApiKeyAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Masked API keys map",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiKeysMap"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Settings"],
+                "summary": "Update API keys",
+                "description": "Update API keys for the authenticated organization",
+                "security": [{ "ApiKeyAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateApiKeys"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "API keys updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiKeysMap"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            }
+        },
+        "/settings/credits": {
+            "get": {
+                "tags": ["Settings"],
+                "summary": "Get organization credit balance",
+                "description": "Get the current credit balance in USD for the authenticated organization",
+                "security": [{ "ApiKeyAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Credit balance information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "balance": {
+                                            "type": "number",
+                                            "description": "Current credit balance in USD"
+                                        }
+                                    },
+                                    "required": ["balance"]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            }
+        },
+        "/users/me": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Get current user information",
+                "security": [{ "ApiKeyAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Current user information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "JsonSchema": {
+                "type": "object",
+                "properties": {
+                    "type": { "type": "string" },
+                    "properties": { "type": "object" },
+                    "required": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    }
+                },
+                "required": ["type", "properties"],
+                "additionalProperties": true
+            },
+            "AgentTool": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "source": {
+                                "type": "string",
+                                "enum": ["builtin"]
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "searchWeb",
+                                    "searchNews",
+                                    "browseWebsite",
+                                    "codeInterpreter"
+                                ]
+                            }
+                        },
+                        "required": ["source", "type"]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "source": {
+                                "type": "string",
+                                "enum": ["mcp"]
+                            },
+                            "serverId": {
+                                "type": "string",
+                                "description": "ID of the MCP server to use"
+                            },
+                            "enabledTools": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "List of tools to enable from the MCP server"
+                            }
+                        },
+                        "required": ["source", "serverId", "enabledTools"]
+                    }
+                ]
+            },
+            "CreateAgentRequest": {
+                "type": "object",
+                "properties": {
+                    "modelStackId": {
+                        "type": "string",
+                        "description": "The model stack to use for the agent",
+                        "enum": [
+                            "anthropic/default",
+                            "anthropic/default-next",
+                            "openai/default",
+                            "openai/reasoning",
+                            "openai/reasoning-low",
+                            "hybrid/reasoning-low"
+                        ]
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Optional human-readable name for the agent"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Optional human-readable description for the agent"
+                    },
+                    "webhookUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true,
+                        "description": "URL to receive webhook notifications when runs complete"
+                    },
+                    "inputSchema": {
+                        "$ref": "#/components/schemas/JsonSchema",
+                        "description": "JSON schema defining the structure of input data for runs"
+                    },
+                    "goalPrompt": {
+                        "type": "string",
+                        "description": "The main prompt that defines what the agent should accomplish"
+                    },
+                    "customPlanningInstructions": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional custom instructions for the planning phase"
+                    },
+                    "customToolCallInstructions": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional custom instructions for tool calling"
+                    },
+                    "customResultInstructions": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional custom instructions for result formatting"
+                    },
+                    "enableContextCompression": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Whether to enable context compression when agent run becomes too long"
+                    },
+                    "tools": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AgentTool"
+                        },
+                        "minItems": 1,
+                        "description": "List of tools available to the agent"
+                    },
+                    "resultType": {
+                        "type": "string",
+                        "enum": ["document", "json"],
+                        "description": "Type of result the agent should produce"
+                    },
+                    "resultSchema": {
+                        "$ref": "#/components/schemas/JsonSchema",
+                        "nullable": true,
+                        "description": "JSON schema for result validation (required when resultType is 'json')"
+                    }
+                },
+                "required": [
+                    "modelStackId",
+                    "goalPrompt",
+                    "inputSchema",
+                    "tools",
+                    "resultType"
+                ]
+            },
+            "UpdateAgentRequest": {
+                "type": "object",
+                "description": "All fields are optional for partial updates",
+                "properties": {
+                    "modelStackId": {
+                        "type": "string",
+                        "enum": [
+                            "anthropic/default",
+                            "anthropic/default-next",
+                            "openai/default",
+                            "openai/reasoning",
+                            "openai/reasoning-low",
+                            "hybrid/reasoning-low"
+                        ]
+                    },
+                    "name": { "type": "string" },
+                    "description": { "type": "string" },
+                    "webhookUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "inputSchema": {
+                        "$ref": "#/components/schemas/JsonSchema"
+                    },
+                    "goalPrompt": { "type": "string" },
+                    "customPlanningInstructions": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "customToolCallInstructions": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "customResultInstructions": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "enableContextCompression": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Whether to enable context compression when agent run becomes too long"
+                    },
+                    "tools": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AgentTool"
+                        },
+                        "minItems": 1
+                    },
+                    "resultType": {
+                        "type": "string",
+                        "enum": ["document", "json"]
+                    },
+                    "resultSchema": {
+                        "$ref": "#/components/schemas/JsonSchema",
+                        "nullable": true
+                    }
+                }
+            },
+            "Agent": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the agent"
+                    },
+                    "modelStackId": {
+                        "type": "string",
+                        "description": "The model stack used by the agent"
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Human-readable name for the agent"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Human-readable description for the agent"
+                    },
+                    "webhookUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true,
+                        "description": "Webhook URL for run completion notifications"
+                    },
+                    "inputSchema": {
+                        "type": "object",
+                        "description": "JSON schema defining input structure"
+                    },
+                    "goalPrompt": {
+                        "type": "string",
+                        "description": "The main goal prompt for the agent"
+                    },
+                    "customPlanningInstructions": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Custom planning instructions"
+                    },
+                    "customToolCallInstructions": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Custom tool call instructions"
+                    },
+                    "customResultInstructions": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Custom result formatting instructions"
+                    },
+                    "enableContextCompression": {
+                        "type": "boolean",
+                        "description": "Whether context compression is enabled"
+                    },
+                    "tools": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AgentTool"
+                        },
+                        "description": "Available tools for the agent"
+                    },
+                    "resultType": {
+                        "type": "string",
+                        "enum": ["document", "json"],
+                        "description": "Type of result the agent produces"
+                    },
+                    "resultSchema": {
+                        "type": "object",
+                        "nullable": true,
+                        "description": "JSON schema for result validation (only for json result type)"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "description": "Whether the agent is active"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Agent creation timestamp"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Agent last update timestamp"
+                    }
+                },
+                "required": [
+                    "id",
+                    "modelStackId",
+                    "inputSchema",
+                    "goalPrompt",
+                    "tools",
+                    "resultType",
+                    "isActive",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "AgentListItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Agent ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Agent name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Agent description"
+                    },
+                    "isPublished": {
+                        "type": "boolean",
+                        "description": "Whether the agent has a published revision"
+                    },
+                    "hasChanges": {
+                        "type": "boolean",
+                        "description": "Whether the agent has unpublished changes"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Last update timestamp"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "isPublished",
+                    "hasChanges",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "AgentList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/AgentListItem"
+                }
+            },
+            "AgentRunListItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Run ID"
+                    },
+                    "agentId": {
+                        "type": "string",
+                        "description": "Agent ID that executed this run"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["pending", "running", "done", "error"],
+                        "description": "Current status of the run"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Run creation timestamp"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Run last update timestamp"
+                    }
+                },
+                "required": [
+                    "id",
+                    "agentId",
+                    "status",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "AgentRunList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/AgentRunListItem"
+                }
+            },
+            "AgentRunError": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "Error code"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Error message"
+                    }
+                },
+                "required": ["code", "message"]
+            },
+            "AgentRunSource": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "Source URL"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Source title (optional)"
+                    }
+                },
+                "required": ["url"]
+            },
+            "AgentRunDocumentResult": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "string",
+                        "description": "The document result content"
+                    },
+                    "sources": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AgentRunSource"
+                        },
+                        "description": "Sources used in the result"
+                    }
+                },
+                "required": ["result", "sources"]
+            },
+            "AgentRun": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the run"
+                    },
+                    "agentId": {
+                        "type": "string",
+                        "description": "ID of the agent that executed this run"
+                    },
+                    "input": {
+                        "type": "object",
+                        "description": "Input data provided for the run"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["pending", "running", "done", "error"],
+                        "description": "Current status of the run"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Run creation timestamp"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Run last update timestamp"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/AgentRunError",
+                        "description": "Error information (only present when status is 'error')"
+                    },
+                    "resultType": {
+                        "type": "string",
+                        "enum": ["document", "json"],
+                        "nullable": true,
+                        "description": "Type of result (null until run completes)"
+                    },
+                    "resultData": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/AgentRunDocumentResult"
+                            },
+                            {
+                                "type": "object",
+                                "description": "JSON result data (structure depends on agent's resultSchema)"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "The result data (null until run completes successfully)"
+                    }
+                },
+                "required": [
+                    "id",
+                    "agentId",
+                    "input",
+                    "status",
+                    "createdAt",
+                    "updatedAt"
+                ],
+                "discriminator": {
+                    "propertyName": "status",
+                    "mapping": {
+                        "pending": "#/components/schemas/AgentRun",
+                        "running": "#/components/schemas/AgentRun",
+                        "done": "#/components/schemas/AgentRun",
+                        "error": "#/components/schemas/AgentRun"
+                    }
+                }
+            },
+            "CreateMcpServerRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable name for the MCP server"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL of the MCP server"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["sse", "streamableHttp"],
+                        "description": "Type of MCP server connection"
+                    }
+                },
+                "required": ["name", "url", "type"]
+            },
+            "UpdateMcpServerRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable name for the MCP server"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL of the MCP server"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["sse", "streamableHttp"],
+                        "description": "Type of MCP server connection"
+                    }
+                }
+            },
+            "McpServer": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "MCP server ID"
+                    },
+                    "organizationId": {
+                        "type": "string",
+                        "description": "Organization ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable name for the MCP server"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL of the MCP server"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["sse", "streamableHttp"],
+                        "description": "Type of MCP server connection"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Last update timestamp"
+                    }
+                },
+                "required": [
+                    "id",
+                    "organizationId",
+                    "name",
+                    "url",
+                    "type",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "McpServerList": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/McpServer" }
+            },
+            "McpTool": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Tool name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Tool description"
+                    }
+                },
+                "required": ["name", "description"]
+            },
+            "McpToolsList": {
+                "type": "object",
+                "properties": {
+                    "tools": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/McpTool"
+                        }
+                    }
+                },
+                "required": ["tools"]
+            },
+            "CreditTransaction": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the transaction"
+                    },
+                    "organizationId": {
+                        "type": "string",
+                        "description": "Organization ID associated with the transaction"
+                    },
+                    "runId": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Agent run ID if transaction is related to a specific run"
+                    },
+                    "eventId": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Event ID if transaction is related to a specific event"
+                    },
+                    "transactionType": {
+                        "type": "string",
+                        "enum": [
+                            "topup.grant",
+                            "topup.payment",
+                            "run.start",
+                            "run.usage",
+                            "run.usageFee"
+                        ],
+                        "description": "Type of transaction that occurred"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "description": "Credit amount in USD (negative for spending, positive for top-ups)"
+                    },
+                    "additionalData": {
+                        "type": "object",
+                        "nullable": true,
+                        "description": "Additional data associated with the transaction (e.g. usage by model)"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the transaction was created (ISO 8601 format)"
+                    }
+                },
+                "required": [
+                    "id",
+                    "organizationId",
+                    "runId",
+                    "eventId",
+                    "transactionType",
+                    "amount",
+                    "additionalData",
+                    "createdAt"
+                ]
+            },
+            "CreditTransactionsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreditTransaction"
+                        },
+                        "description": "Array of credit transactions"
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "limit": {
+                                "type": "integer",
+                                "description": "Maximum number of items per page"
+                            },
+                            "offset": {
+                                "type": "integer",
+                                "description": "Number of items skipped"
+                            },
+                            "total": {
+                                "type": "integer",
+                                "description": "Total number of items available"
+                            },
+                            "hasMore": {
+                                "type": "boolean",
+                                "description": "Whether there are more items available"
+                            }
+                        },
+                        "required": ["limit", "offset", "total", "hasMore"],
+                        "description": "Pagination metadata"
+                    }
+                },
+                "required": ["data", "pagination"]
+            },
+            "CreditUsageResponse": {
+                "type": "object",
+                "properties": {
+                    "total": {
+                        "type": "number",
+                        "description": "Total credit usage for the specified period"
+                    },
+                    "period": {
+                        "type": "object",
+                        "properties": {
+                            "startDate": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Start date of the usage period (ISO 8601 format)"
+                            },
+                            "endDate": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "End date of the usage period (ISO 8601 format)"
+                            }
+                        },
+                        "required": ["startDate", "endDate"],
+                        "description": "The time period for which usage was calculated"
+                    }
+                },
+                "required": ["total", "period"]
+            },
+            "Revision": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Revision ID"
+                    },
+                    "agentId": {
+                        "type": "string",
+                        "description": "Agent ID"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Revision creation timestamp"
+                    }
+                },
+                "required": ["id", "agentId", "createdAt"]
+            },
+            "RevisionList": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/Revision" }
+            },
+            "RevisionDiff": {
+                "type": "object",
+                "properties": {
+                    "changes": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "path": {
+                                    "type": "string",
+                                    "description": "JSON path of the change"
+                                },
+                                "oldValue": {
+                                    "description": "Previous value"
+                                },
+                                "newValue": {
+                                    "description": "New value"
+                                }
+                            },
+                            "required": ["path"]
+                        },
+                        "description": "List of changes between revisions"
+                    }
+                },
+                "required": ["changes"]
+            },
+            "AgentRunEvent": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Event ID"
+                    },
+                    "runId": {
+                        "type": "string",
+                        "description": "Run ID"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "planning",
+                            "reasoning",
+                            "tool_call",
+                            "context_compression"
+                        ],
+                        "description": "Type of event"
+                    },
+                    "data": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Event data"
+                    },
+                    "startedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Event start timestamp"
+                    },
+                    "finishedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true,
+                        "description": "Event finish timestamp"
+                    }
+                },
+                "required": ["id", "runId", "type", "data", "startedAt"]
+            },
+            "AgentRunEventList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/AgentRunEvent"
+                }
+            },
+            "OrganizationSettings": {
+                "type": "object",
+                "properties": {
+                    "useOwnKeys": {
+                        "type": "boolean",
+                        "description": "Whether the organization uses their own API keys"
+                    },
+                    "creditBalance": {
+                        "type": "number",
+                        "description": "Current credit balance"
+                    }
+                },
+                "required": ["useOwnKeys"]
+            },
+            "UpdateOrganizationSettings": {
+                "type": "object",
+                "properties": {
+                    "useOwnKeys": {
+                        "type": "boolean",
+                        "description": "Whether the organization should use their own API keys"
+                    }
+                }
+            },
+            "ApiKeysMap": {
+                "type": "object",
+                "properties": {
+                    "openai": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Masked OpenAI API key"
+                    },
+                    "anthropic": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Masked Anthropic API key"
+                    }
+                }
+            },
+            "UpdateApiKeys": {
+                "type": "object",
+                "properties": {
+                    "openai": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "OpenAI API key"
+                    },
+                    "anthropic": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Anthropic API key"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                    },
+                    "organizationId": {
+                        "type": "string",
+                        "description": "Organization ID"
+                    },
+                    "tesseralUserId": {
+                        "type": "string",
+                        "description": "Tesseral user ID"
+                    },
+                    "tesseralOrganizationId": {
+                        "type": "string",
+                        "description": "Tesseral organization ID"
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "User's display name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "User's email address"
+                    },
+                    "profilePictureUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "User's profile picture URL"
+                    },
+                    "isOrganizationOwner": {
+                        "type": "boolean",
+                        "description": "Whether the user is the organization owner"
+                    },
+                    "organizationName": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Organization display name"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "User creation timestamp"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "User last update timestamp"
+                    }
+                },
+                "required": [
+                    "id",
+                    "organizationId",
+                    "tesseralUserId",
+                    "tesseralOrganizationId",
+                    "isOrganizationOwner",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-API-Key"
+            }
+        }
+    },
+    "webhooks": {
+        "onRunUpdate": {
+            "post": {
+                "tags": ["Webhooks"],
+
+                "summary": "Webhook called when an agent run status changes",
+                "description": "This webhook is called whenever an agent run status changes (pending -> running -> done/error).\nConfigure the webhook URL when creating or updating an agent.\n",
+                "requestBody": {
+                    "description": "Updated run information",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AgentRun"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Webhook received and processed successfully"
+                    },
+                    "4XX": {
+                        "description": "Webhook processing failed (will be retried)"
+                    },
+                    "5XX": {
+                        "description": "Webhook processing failed (will be retried)"
+                    }
+                }
+            }
+        }
+    }
+}

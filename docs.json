@@ -1,6 +1,6 @@
 {
     "$schema": "https://mintlify.com/docs.json",
-    "theme": "mint",
+    "theme": "maple",
     "name": "Ag.dev",
     "logo": {
         "light": "/public/logo.svg",
@@ -12,10 +12,16 @@
         "light": "#ffffff",
         "dark": "#000000"
     },
+    "icons": {
+        "library": "lucide"
+    },
     "navigation": {
-        "tabs": [
+        "dropdowns": [
             {
-                "tab": "Documentation",
+                "dropdown": "Documentation",
+                "description": "Learn how to use Ag.dev",
+                "icon": "book",
+                "iconType": "regular",
                 "groups": [
                     {
                         "group": "Getting started",
@@ -32,6 +38,12 @@
                         ]
                     }
                 ]
+            },
+            {
+                "dropdown": "API Reference",
+                "description": "Using the Ag.dev API",
+                "icon": "terminal",
+                "openapi": "openapi.json"
             }
         ],
         "global": {
