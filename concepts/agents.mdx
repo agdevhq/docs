@@ -14,6 +14,7 @@ An agent is defined by several key properties that control its behavior and capa
 
 -   **Goal Prompt**: This is the most important instruction, defining the agent's primary objective. A clear, specific goal is crucial for success.
 -   **Tools**: An agent can be equipped with a set of [Tools](/concepts/tools) to perform actions like searching the web, browsing websites, or interacting with external services via MCP.
+-   **Drives**: Agents can be bound to one or more drives, which provide workspace access through MCP tools. When drives are attached, the agent automatically receives tools to search and interact with the workspace content. **Note**: An agent must have at least one tool or drive binding configured. Drive bindings provide implicit tools, so an agent with only drives (and no explicit tools) is valid.
 -   **Input Schema**: This is a JSON schema that defines the structure of the data an agent expects to receive for a run. [Learn more about Inputs](/concepts/inputs).
 -   **Output Configuration**: You can configure an agent to return its result as a freeform `document` or as a structured `json` object that conforms to a specific schema.
 -   **Model Stack**: You can select the underlying AI model that the agent will use, allowing you to choose the best fit for your task's complexity and cost.
