@@ -36,6 +36,10 @@
             "description": "User information and authentication"
         },
         {
+            "name": "Drives",
+            "description": "Drive management and file operations"
+        },
+        {
             "name": "Webhooks",
             "description": "Webhook health checks"
         }
@@ -593,6 +597,471 @@
                     "404": {
                         "description": "Agent or run not found"
                     }
+                }
+            }
+        },
+        "/drives": {
+            "get": {
+                "tags": ["Drives"],
+                "summary": "List Drives",
+                "description": "Retrieve drives for the authenticated organization with pagination",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20,
+                            "description": "Maximum number of drives to return"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 0,
+                            "description": "Number of drives to skip for pagination"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of drives",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DriveListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Drives"],
+                "summary": "Create Drive",
+                "description": "Create a new drive for the authenticated organization",
+                "security": [{ "ApiKeyAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDriveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Drive created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Drive"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    }
+                }
+            }
+        },
+        "/drives/{driveId}": {
+            "get": {
+                "tags": ["Drives"],
+                "summary": "Get Drive",
+                "description": "Retrieve details for a specific drive",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "driveId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Drive ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Drive details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Drive"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Drive not found" }
+                }
+            },
+            "delete": {
+                "tags": ["Drives"],
+                "summary": "Delete Drive",
+                "description": "Permanently remove a drive and its contents",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "driveId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Drive ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Drive deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Deletion confirmation message"
+                                        }
+                                    },
+                                    "required": ["message"]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Drive not found" }
+                }
+            }
+        },
+        "/drives/{driveId}/items": {
+            "get": {
+                "tags": ["Drives"],
+                "summary": "List Drive Items",
+                "description": "List files and directories in a drive",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "driveId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Drive ID"
+                        }
+                    },
+                    {
+                        "name": "path",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^/(?!.*(?:^|/)\\.\\.(?:/|$)).*$",
+                            "default": "/",
+                            "description": "Path to list items from. Must start with \"/\" and must not include \"..\" segments"
+                        }
+                    },
+                    {
+                        "name": "recursive",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Whether to list items recursively"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Drive items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DriveItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Drive not found" }
+                }
+            },
+            "post": {
+                "tags": ["Drives"],
+                "summary": "Upload Drive File",
+                "description": "Upload a file into a drive path. Max file size 100MB. Content type is preserved as provided.",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "driveId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Drive ID"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "path": {
+                                        "type": "string",
+                                        "pattern": "^/(?!.*(?:^|/)\\.\\.(?:/|$)).*$",
+                                        "description": "Destination path for the uploaded file. Must start with \"/\" and must not include \"..\" segments"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "File contents (max 100MB). Content type is preserved as provided."
+                                    }
+                                },
+                                "required": ["path", "file"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uploaded file details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DriveFileItem"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Drive not found" }
+                }
+            }
+        },
+        "/drives/{driveId}/files/{fileId}": {
+            "get": {
+                "tags": ["Drives"],
+                "summary": "Get Drive File",
+                "description": "Retrieve file metadata by ID",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "driveId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Drive ID"
+                        }
+                    },
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "File ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DriveFileItem"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Drive or file not found" }
+                }
+            },
+            "patch": {
+                "tags": ["Drives"],
+                "summary": "Update Drive File",
+                "description": "Rename or move a drive file",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "driveId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Drive ID"
+                        }
+                    },
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "File ID"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDriveFileRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated file details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DriveFileItem"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Drive or file not found" }
+                }
+            },
+            "delete": {
+                "tags": ["Drives"],
+                "summary": "Delete Drive File",
+                "description": "Delete a file from a drive",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "driveId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Drive ID"
+                        }
+                    },
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "File ID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File deletion queued",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Deletion confirmation message"
+                                        }
+                                    },
+                                    "required": ["message"]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Drive or file not found" }
+                }
+            }
+        },
+        "/drives/{driveId}/items/tree": {
+            "delete": {
+                "tags": ["Drives"],
+                "summary": "Delete Drive Tree",
+                "description": "Delete a directory tree within a drive",
+                "security": [{ "ApiKeyAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "driveId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Drive ID"
+                        }
+                    },
+                    {
+                        "name": "path",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^/(?!.*(?:^|/)\\.\\.(?:/|$)).*$",
+                            "description": "Path to delete (directory tree). Must start with \"/\" and must not include \"..\" segments"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete job queued",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteJobResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "404": { "description": "Drive not found" }
                 }
             }
         },
@@ -1679,13 +2148,9 @@
                             "total": {
                                 "type": "integer",
                                 "description": "Total number of items available"
-                            },
-                            "hasMore": {
-                                "type": "boolean",
-                                "description": "Whether there are more items available"
                             }
                         },
-                        "required": ["limit", "offset", "total", "hasMore"],
+                        "required": ["limit", "offset", "total"],
                         "description": "Pagination metadata"
                     }
                 },
@@ -1865,6 +2330,184 @@
                         "description": "Anthropic API key"
                     }
                 }
+            },
+            "CreateDriveRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable name for the drive"
+                    }
+                },
+                "required": ["name"]
+            },
+            "Drive": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Drive ID"
+                    },
+                    "organizationId": {
+                        "type": "string",
+                        "description": "Organization ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable name for the drive"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Last update timestamp"
+                    }
+                },
+                "required": [
+                    "id",
+                    "organizationId",
+                    "name",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "DriveListResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Drive"
+                        },
+                        "description": "Array of drives"
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "limit": {
+                                "type": "integer",
+                                "description": "Maximum number of items per page"
+                            },
+                            "offset": {
+                                "type": "integer",
+                                "description": "Number of items skipped"
+                            },
+                            "total": {
+                                "type": "integer",
+                                "description": "Total number of items available"
+                            }
+                        },
+                        "required": ["limit", "offset", "total"],
+                        "description": "Pagination metadata"
+                    }
+                },
+                "required": ["data", "pagination"]
+            },
+            "DriveFileItem": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "type": "string",
+                        "enum": ["file"],
+                        "description": "Item type"
+                    },
+                    "id": { "type": "string", "description": "File ID" },
+                    "name": { "type": "string", "description": "File name" },
+                    "path": { "type": "string", "description": "File path" },
+                    "status": {
+                        "type": "string",
+                        "enum": ["processing", "ready", "error"],
+                        "description": "File processing status"
+                    },
+                    "modifiedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Last modified timestamp"
+                    },
+                    "size": { "type": "number", "description": "File size" },
+                    "contentType": {
+                        "type": "string",
+                        "description": "File content type"
+                    },
+                    "description": {
+                        "type": ["string", "null"],
+                        "description": "File description"
+                    },
+                    "summary": {
+                        "type": ["string", "null"],
+                        "description": "File summary"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "description": "Additional file metadata"
+                    }
+                },
+                "required": ["kind", "id", "name", "path", "status", "modifiedAt"]
+            },
+            "DriveDirectoryItem": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "type": "string",
+                        "enum": ["directory"],
+                        "description": "Item type"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Directory name"
+                    },
+                    "path": {
+                        "type": "string",
+                        "description": "Directory path"
+                    },
+                    "items": {
+                        "type": "array",
+                        "description": "Nested file or directory items",
+                        "items": {
+                            "$ref": "#/components/schemas/DriveItem"
+                        }
+                    }
+                },
+                "required": ["kind", "name", "path"]
+            },
+            "DriveItem": {
+                "oneOf": [
+                    { "$ref": "#/components/schemas/DriveFileItem" },
+                    { "$ref": "#/components/schemas/DriveDirectoryItem" }
+                ]
+            },
+            "UpdateDriveFileRequest": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "pattern": "^/(?!.*(?:^|/)\\.\\.(?:/|$)).*$",
+                        "description": "New path for the file. Must start with \"/\" and must not include \"..\" segments"
+                    }
+                },
+                "required": ["path"]
+            },
+            "DeleteJobResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Deletion status message"
+                    },
+                    "jobId": {
+                        "type": "string",
+                        "description": "Delete job ID"
+                    },
+                    "documentCount": {
+                        "type": "integer",
+                        "description": "Number of documents affected"
+                    }
+                },
+                "required": ["message", "jobId"]
             },
             "User": {
                 "type": "object",
