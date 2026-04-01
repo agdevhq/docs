@@ -1829,10 +1829,55 @@
                 ]
             },
             "AgentRunList": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/AgentRunListItem"
-                }
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AgentRunListItem"
+                        },
+                        "description": "Array of agent runs"
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "limit": {
+                                "type": "integer",
+                                "description": "Maximum number of items per page"
+                            },
+                            "offset": {
+                                "type": "integer",
+                                "description": "Number of items skipped"
+                            },
+                            "total": {
+                                "type": "integer",
+                                "description": "Total number of items available"
+                            }
+                        },
+                        "required": ["limit", "offset", "total"],
+                        "description": "Pagination metadata"
+                    },
+                    "counts": {
+                        "type": "object",
+                        "properties": {
+                            "all": {
+                                "type": "integer",
+                                "description": "Total number of runs across all statuses"
+                            },
+                            "completed": {
+                                "type": "integer",
+                                "description": "Total number of completed runs"
+                            },
+                            "failed": {
+                                "type": "integer",
+                                "description": "Total number of failed runs"
+                            }
+                        },
+                        "required": ["all", "completed", "failed"],
+                        "description": "Additional run counts"
+                    }
+                },
+                "required": ["data", "pagination", "counts"]
             },
             "AgentRunError": {
                 "type": "object",
@@ -2233,50 +2278,211 @@
                 "required": ["changes"]
             },
             "AgentRunEvent": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "description": "Event ID"
-                    },
-                    "runId": {
-                        "type": "string",
-                        "description": "Run ID"
-                    },
-                    "type": {
-                        "type": "string",
-                        "enum": [
-                            "planning",
-                            "reasoning",
-                            "tool_call",
-                            "context_compression"
-                        ],
-                        "description": "Type of event"
-                    },
-                    "data": {
+                "oneOf": [
+                    {
                         "type": "object",
-                        "additionalProperties": true,
-                        "description": "Event data"
+                        "properties": {
+                            "id": { "type": "string", "description": "Event ID" },
+                            "runId": { "type": "string", "description": "Run ID" },
+                            "type": {
+                                "type": "string",
+                                "enum": ["planning"],
+                                "description": "Type of event"
+                            },
+                            "data": {
+                                "type": "object",
+                                "properties": {
+                                    "content": { "type": "string" }
+                                },
+                                "required": ["content"],
+                                "additionalProperties": false
+                            },
+                            "startedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Event start timestamp"
+                            },
+                            "finishedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true,
+                                "description": "Event finish timestamp"
+                            }
+                        },
+                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "additionalProperties": false
                     },
-                    "startedAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "Event start timestamp"
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": { "type": "string", "description": "Event ID" },
+                            "runId": { "type": "string", "description": "Run ID" },
+                            "type": {
+                                "type": "string",
+                                "enum": ["narration"],
+                                "description": "Type of event"
+                            },
+                            "data": {
+                                "type": "object",
+                                "properties": {
+                                    "content": { "type": "string" }
+                                },
+                                "required": ["content"],
+                                "additionalProperties": false
+                            },
+                            "startedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Event start timestamp"
+                            },
+                            "finishedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true,
+                                "description": "Event finish timestamp"
+                            }
+                        },
+                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "additionalProperties": false
                     },
-                    "finishedAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true,
-                        "description": "Event finish timestamp"
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": { "type": "string", "description": "Event ID" },
+                            "runId": { "type": "string", "description": "Run ID" },
+                            "type": {
+                                "type": "string",
+                                "enum": ["reasoning"],
+                                "description": "Type of event"
+                            },
+                            "data": {
+                                "type": "object",
+                                "properties": {
+                                    "content": { "type": "string" },
+                                    "providerMetadata": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                },
+                                "required": ["content"],
+                                "additionalProperties": false
+                            },
+                            "startedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Event start timestamp"
+                            },
+                            "finishedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true,
+                                "description": "Event finish timestamp"
+                            }
+                        },
+                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": { "type": "string", "description": "Event ID" },
+                            "runId": { "type": "string", "description": "Run ID" },
+                            "type": {
+                                "type": "string",
+                                "enum": ["tool_call"],
+                                "description": "Type of event"
+                            },
+                            "data": {
+                                "type": "object",
+                                "properties": {
+                                    "id": { "type": "string" },
+                                    "name": { "type": "string" },
+                                    "input": {},
+                                    "output": {}
+                                },
+                                "required": ["id", "name", "input"],
+                                "additionalProperties": false
+                            },
+                            "startedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Event start timestamp"
+                            },
+                            "finishedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true,
+                                "description": "Event finish timestamp"
+                            }
+                        },
+                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": { "type": "string", "description": "Event ID" },
+                            "runId": { "type": "string", "description": "Run ID" },
+                            "type": {
+                                "type": "string",
+                                "enum": ["context_compression"],
+                                "description": "Type of event"
+                            },
+                            "data": {
+                                "type": "object",
+                                "additionalProperties": false
+                            },
+                            "startedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Event start timestamp"
+                            },
+                            "finishedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true,
+                                "description": "Event finish timestamp"
+                            }
+                        },
+                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "additionalProperties": false
                     }
-                },
-                "required": ["id", "runId", "type", "data", "startedAt"]
+                ]
             },
             "AgentRunEventList": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/AgentRunEvent"
-                }
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AgentRunEvent"
+                        },
+                        "description": "Array of run events"
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "limit": {
+                                "type": "integer",
+                                "description": "Maximum number of items per page"
+                            },
+                            "offset": {
+                                "type": "integer",
+                                "description": "Number of items skipped"
+                            },
+                            "total": {
+                                "type": "integer",
+                                "description": "Total number of items available"
+                            }
+                        },
+                        "required": ["limit", "offset", "total"],
+                        "description": "Pagination metadata"
+                    }
+                },
+                "required": ["data", "pagination"]
             },
             "OrganizationSettings": {
                 "type": "object",

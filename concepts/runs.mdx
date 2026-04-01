@@ -17,7 +17,7 @@ Each run is a distinct, logged instance of an agent's work, allowing you to trac
     -   `running`: The agent is actively working on the task.
     -   `done`: The agent has successfully completed the task.
     -   `error`: The run failed due to an error.
--   **Events**: During a run, the agent emits a series of `events` that provide a real-time log of its thought process and actions. These events include `planning`, `reasoning`, and `tool_call`, giving you full visibility into how the agent is working towards its goal.
+-   **Events**: During a run, the agent emits a series of `events` that provide a real-time log of its planning, visible narration, provider reasoning traces, and tool activity. The main event types are `planning`, `narration`, `reasoning`, and `tool_call`, so you can distinguish between user-facing progress updates and provider-native reasoning metadata.
 -   **Result**: Once a run is complete, it produces a `resultData`. This can be a text `document` or a structured `json` object, depending on the agent's configuration. If the agent used research tools, the result will also include a list of sources it consulted.
 
 ### Why are Runs Important?
