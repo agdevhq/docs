@@ -1551,11 +1551,6 @@
                         "nullable": true,
                         "description": "Optional custom instructions for result formatting"
                     },
-                    "enableContextCompression": {
-                        "type": "boolean",
-                        "default": true,
-                        "description": "Whether to enable context compression when agent run becomes too long"
-                    },
                     "tools": {
                         "type": "array",
                         "items": {
@@ -1620,11 +1615,6 @@
                     "customResultInstructions": {
                         "type": "string",
                         "nullable": true
-                    },
-                    "enableContextCompression": {
-                        "type": "boolean",
-                        "default": true,
-                        "description": "Whether to enable context compression when agent run becomes too long"
                     },
                     "tools": {
                         "type": "array",
@@ -1692,10 +1682,6 @@
                         "type": "string",
                         "nullable": true,
                         "description": "Custom result formatting instructions"
-                    },
-                    "enableContextCompression": {
-                        "type": "boolean",
-                        "description": "Whether context compression is enabled"
                     },
                     "tools": {
                         "type": "array",
