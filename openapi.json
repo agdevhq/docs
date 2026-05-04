@@ -2268,8 +2268,14 @@
                     {
                         "type": "object",
                         "properties": {
-                            "id": { "type": "string", "description": "Event ID" },
-                            "runId": { "type": "string", "description": "Run ID" },
+                            "id": {
+                                "type": "string",
+                                "description": "Event ID"
+                            },
+                            "runId": {
+                                "type": "string",
+                                "description": "Run ID"
+                            },
                             "type": {
                                 "type": "string",
                                 "enum": ["planning"],
@@ -2295,14 +2301,27 @@
                                 "description": "Event finish timestamp"
                             }
                         },
-                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "required": [
+                            "id",
+                            "runId",
+                            "type",
+                            "data",
+                            "startedAt",
+                            "finishedAt"
+                        ],
                         "additionalProperties": false
                     },
                     {
                         "type": "object",
                         "properties": {
-                            "id": { "type": "string", "description": "Event ID" },
-                            "runId": { "type": "string", "description": "Run ID" },
+                            "id": {
+                                "type": "string",
+                                "description": "Event ID"
+                            },
+                            "runId": {
+                                "type": "string",
+                                "description": "Run ID"
+                            },
                             "type": {
                                 "type": "string",
                                 "enum": ["narration"],
@@ -2328,14 +2347,27 @@
                                 "description": "Event finish timestamp"
                             }
                         },
-                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "required": [
+                            "id",
+                            "runId",
+                            "type",
+                            "data",
+                            "startedAt",
+                            "finishedAt"
+                        ],
                         "additionalProperties": false
                     },
                     {
                         "type": "object",
                         "properties": {
-                            "id": { "type": "string", "description": "Event ID" },
-                            "runId": { "type": "string", "description": "Run ID" },
+                            "id": {
+                                "type": "string",
+                                "description": "Event ID"
+                            },
+                            "runId": {
+                                "type": "string",
+                                "description": "Run ID"
+                            },
                             "type": {
                                 "type": "string",
                                 "enum": ["reasoning"],
@@ -2368,14 +2400,27 @@
                                 "description": "Event finish timestamp"
                             }
                         },
-                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "required": [
+                            "id",
+                            "runId",
+                            "type",
+                            "data",
+                            "startedAt",
+                            "finishedAt"
+                        ],
                         "additionalProperties": false
                     },
                     {
                         "type": "object",
                         "properties": {
-                            "id": { "type": "string", "description": "Event ID" },
-                            "runId": { "type": "string", "description": "Run ID" },
+                            "id": {
+                                "type": "string",
+                                "description": "Event ID"
+                            },
+                            "runId": {
+                                "type": "string",
+                                "description": "Run ID"
+                            },
                             "type": {
                                 "type": "string",
                                 "enum": ["tool_call"],
@@ -2404,14 +2449,27 @@
                                 "description": "Event finish timestamp"
                             }
                         },
-                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "required": [
+                            "id",
+                            "runId",
+                            "type",
+                            "data",
+                            "startedAt",
+                            "finishedAt"
+                        ],
                         "additionalProperties": false
                     },
                     {
                         "type": "object",
                         "properties": {
-                            "id": { "type": "string", "description": "Event ID" },
-                            "runId": { "type": "string", "description": "Run ID" },
+                            "id": {
+                                "type": "string",
+                                "description": "Event ID"
+                            },
+                            "runId": {
+                                "type": "string",
+                                "description": "Run ID"
+                            },
                             "type": {
                                 "type": "string",
                                 "enum": ["context_compression"],
@@ -2433,7 +2491,14 @@
                                 "description": "Event finish timestamp"
                             }
                         },
-                        "required": ["id", "runId", "type", "data", "startedAt", "finishedAt"],
+                        "required": [
+                            "id",
+                            "runId",
+                            "type",
+                            "data",
+                            "startedAt",
+                            "finishedAt"
+                        ],
                         "additionalProperties": false
                     }
                 ]
@@ -2638,7 +2703,14 @@
                         "description": "Additional file metadata"
                     }
                 },
-                "required": ["kind", "id", "name", "path", "status", "modifiedAt"]
+                "required": [
+                    "kind",
+                    "id",
+                    "name",
+                    "path",
+                    "status",
+                    "modifiedAt"
+                ]
             },
             "DriveDirectoryItem": {
                 "type": "object",
